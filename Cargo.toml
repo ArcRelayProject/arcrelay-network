@@ -1,0 +1,34 @@
+[package]
+name = "arcrelay-network"
+version = "0.1.0"
+edition = "2021"
+license = "AGPL-3.0-only"
+publish = false
+
+[dependencies]
+arcrelay-peer = { version = "0.1.0", git = "https://github.com/ArcRelayProject/arcrelay-peer.git", rev = "739e41c49020cf19f0d490c64143e68e995aef83" }
+arcrelay-transport = { version = "0.1.0", git = "https://github.com/ArcRelayProject/arcrelay-transport.git", rev = "16305821fea3778e3fc544f0e57eb3b5b51fec11" }
+arcrelay-wire = { version = "0.1.0", git = "https://github.com/ArcRelayProject/arcrelay-wire.git", rev = "ac143db0e09039d7eeaf211f1399141086716533" }
+async-trait = "0.1"
+base64 = "0.22"
+bytes = "1"
+ed25519-dalek = { version = "2", features = ["rand_core"] }
+if-addrs = "0.15"
+mdns-sd = "0.21"
+prost = "0.13"
+quinn = { version = "0.11.11", default-features = false, features = ["runtime-tokio", "rustls-ring"] }
+rand = "0.8"
+rcgen = "0.13"
+rustls = { version = "0.23", default-features = false, features = ["ring", "std"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"
+socket2 = "0.5"
+sqlx = { version = "0.8", default-features = false, features = ["runtime-tokio-rustls", "sqlite"] }
+thiserror = "2"
+tokio = { version = "1", features = ["fs", "io-util", "macros", "net", "rt", "sync", "time"] }
+tracing = "0.1"
+
+[dev-dependencies]
+tempfile = "3"
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
