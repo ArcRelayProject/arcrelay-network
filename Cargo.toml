@@ -6,8 +6,8 @@ license = "AGPL-3.0-only"
 publish = false
 
 [dependencies]
-arcrelay-peer = { version = "0.1.0", git = "https://github.com/ArcRelayProject/arcrelay-peer.git", rev = "739e41c49020cf19f0d490c64143e68e995aef83" }
-arcrelay-transport = { version = "0.1.0", git = "https://github.com/ArcRelayProject/arcrelay-transport.git", rev = "16305821fea3778e3fc544f0e57eb3b5b51fec11" }
+arcrelay-peer = { version = "0.1.0", git = "https://github.com/ArcRelayProject/arcrelay-peer.git", rev = "48cd4ad8538a0b5add33877f7f9b295e78c4fce1" }
+arcrelay-transport = { version = "0.1.0", git = "https://github.com/ArcRelayProject/arcrelay-transport.git", rev = "968a954c753b567d51fb17aa00c3c508af80250b" }
 arcrelay-wire = { version = "0.1.0", git = "https://github.com/ArcRelayProject/arcrelay-wire.git", rev = "f27e8db31c222bc478f22fabd6c3effe09655625" }
 async-trait = "0.1"
 base64 = "0.22"
