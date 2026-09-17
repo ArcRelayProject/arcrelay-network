@@ -9,6 +9,8 @@ import subprocess
 import sys
 
 TRUSTED_AUTHORS = {"zibo-chen": 58510061, "chenzibo": 18285974}
+# Keep these names aligned with the component's existing technical workflows.
+EXPECTED_TECHNICAL_CHECKS = {"check", "Analyze (actions)", "Analyze (rust)"}
 
 
 def eligible(pr, repository):
@@ -47,7 +49,8 @@ def quality_checks_passed(repository, number, expected_head):
     checks = snapshot["statusCheckRollup"]
     checks = [check for check in checks
               if check.get("workflowName") != "Trusted maintainer auto-merge"]
-    if not checks or not any(check.get("name") == "check" for check in checks):
+    reported = {check.get("name", check.get("context")) for check in checks}
+    if not EXPECTED_TECHNICAL_CHECKS.issubset(reported):
         return False
     return all(
         (check.get("status") == "COMPLETED"

@@ -85,11 +85,20 @@ class QualityCheckTests(unittest.TestCase):
     @patch.object(policy, "gh")
     def test_successful_checks_ignore_only_own_workflow(self, gh):
         import json
-        gh.return_value = json.dumps({"headRefOid": "a" * 40, "statusCheckRollup": [
-            {"name": "check", "status": "COMPLETED", "conclusion": "SUCCESS"},
-            {"name": "Analyze (rust)", "status": "COMPLETED", "conclusion": "SUCCESS"},
-            {"workflowName": "Trusted maintainer auto-merge", "status": "IN_PROGRESS"}]})
+        checks = [{"name": name, "status": "COMPLETED", "conclusion": "SUCCESS"}
+                  for name in policy.EXPECTED_TECHNICAL_CHECKS]
+        checks.append({"workflowName": "Trusted maintainer auto-merge", "status": "IN_PROGRESS"})
+        gh.return_value = json.dumps({"headRefOid": "a" * 40, "statusCheckRollup": checks})
         self.assertTrue(policy.quality_checks_passed("owner/repo", 1, "a" * 40))
+
+    @patch.object(policy, "gh")
+    def test_every_configured_technical_check_must_be_reported(self, gh):
+        import json
+        for missing in policy.EXPECTED_TECHNICAL_CHECKS:
+            checks = [{"name": name, "status": "COMPLETED", "conclusion": "SUCCESS"}
+                      for name in policy.EXPECTED_TECHNICAL_CHECKS if name != missing]
+            gh.return_value = json.dumps({"headRefOid": "a" * 40, "statusCheckRollup": checks})
+            self.assertFalse(policy.quality_checks_passed("owner/repo", 1, "a" * 40))
 
     @patch.object(policy, "gh")
     def test_changed_head_never_reuses_successful_checks(self, gh):
