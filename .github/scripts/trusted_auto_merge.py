@@ -37,18 +37,21 @@ def gh(*args, payload=None):
     return result.stdout
 
 
-def quality_checks_passed(repository, number):
+def quality_checks_passed(repository, number, expected_head):
     # CodeQL is not a required context in every component. Wait for every
     # reported technical check as well as the existing protected merge gate.
-    checks = json.loads(gh("pr", "view", str(number), "--repo", repository,
-                           "--json", "statusCheckRollup"))["statusCheckRollup"]
+    snapshot = json.loads(gh("pr", "view", str(number), "--repo", repository,
+                             "--json", "headRefOid,statusCheckRollup"))
+    if snapshot["headRefOid"] != expected_head:
+        return False
+    checks = snapshot["statusCheckRollup"]
     checks = [check for check in checks
               if check.get("workflowName") != "Trusted maintainer auto-merge"]
     if not checks or not any(check.get("name") == "check" for check in checks):
         return False
     return all(
         (check.get("status") == "COMPLETED"
-         and check.get("conclusion") in ("SUCCESS", "NEUTRAL", "SKIPPED"))
+         and check.get("conclusion") == "SUCCESS")
         if "status" in check else check.get("state") == "SUCCESS"
         for check in checks
     )
@@ -60,10 +63,10 @@ def configure(repository, number):
     if not eligible(pr, repository):
         print(f"PR #{number}: not an eligible maintainer PR; leaving policy unchanged.")
         return
-    if not quality_checks_passed(repository, number):
+    sha = pr["head"]["sha"]
+    if not quality_checks_passed(repository, number, sha):
         print(f"PR #{number}: technical checks are missing, pending, or unsuccessful; waiting.")
         return
-    sha = pr["head"]["sha"]
     # Bind approval and auto-merge to the same immutable head. A new push
     # dismisses the approval and triggers this workflow again.
     reviews = json.loads(gh("api", f"{endpoint}/reviews?per_page=100"))
