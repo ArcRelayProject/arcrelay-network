@@ -29,7 +29,10 @@ impl SqlitePeerRepository {
             .create_if_missing(true)
             .foreign_keys(true);
         let pool = SqlitePoolOptions::new()
-            .max_connections(4)
+            // Peer metadata is small and infrequently updated. Each SQLite
+            // connection owns an OS worker thread, so keep one spare reader.
+            .max_connections(2)
+            .idle_timeout(std::time::Duration::from_secs(30))
             .connect_with(options)
             .await
             .map_err(backend)?;
