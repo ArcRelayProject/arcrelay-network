@@ -8,7 +8,7 @@ publish = false
 [dependencies]
 arcrelay-peer = { version = "0.1.0", git = "https://github.com/ArcRelayProject/arcrelay-peer.git", rev = "48cd4ad8538a0b5add33877f7f9b295e78c4fce1" }
 arcrelay-transport = { version = "0.1.0", git = "https://github.com/ArcRelayProject/arcrelay-transport.git", rev = "c95846ae22ac1a4d72614a126e64ca892f390bca" }
-arcrelay-wire = { version = "0.1.0", git = "https://github.com/ArcRelayProject/arcrelay-wire.git", rev = "f27e8db31c222bc478f22fabd6c3effe09655625" }
+arcrelay-wire = { version = "0.1.0", git = "https://github.com/ArcRelayProject/arcrelay-wire.git", rev = "845b2e5fec81e186fbf74a32f14acf505c145326" }
 async-trait = "0.1"
 base64 = "0.22"
 bytes = "1"
